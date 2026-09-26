@@ -18,7 +18,6 @@ from .nutrition_scorer import NutritionScorer
 
 REASONABLE_MEAL_MINUTES = 30.0
 PROXIMITY_FAR_MILES = 0.75  # campus is ~1 mile across; farther than this earns no proximity credit
-UNKNOWN_LOCATION_PROXIMITY_SCORE = 0.5
 
 
 class RecommendationEngine:
@@ -60,11 +59,7 @@ class RecommendationEngine:
                     time_score = min(overlap_minutes / REASONABLE_MEAL_MINUTES, 1.0)
                     proximity_score = self._proximity_score(hall, window)
 
-                    total_score = (
-                        self.weights["nutrition"] * nutrition_score
-                        + self.weights["time"] * time_score
-                        + self.weights["proximity"] * proximity_score
-                    )
+                    total_score = self._total_score(nutrition_score, time_score, proximity_score)
                     recommendations.append(
                         Recommendation(
                             dining_hall_name=hall.name,
@@ -93,10 +88,17 @@ class RecommendationEngine:
         earliest_end = min(window.end, meal_end_dt)
         return max(0.0, (earliest_end - latest_start).total_seconds() / 60)
 
-    def _proximity_score(self, hall: DiningHall, window: AvailabilityWindow) -> float:
+    def _total_score(self, nutrition_score: float, time_score: float, proximity_score: Optional[float]) -> float:
+        weighted = self.weights["nutrition"] * nutrition_score + self.weights["time"] * time_score
+        if proximity_score is None:
+            # Unknown location: spread proximity's weight over the other two rather than guess a distance.
+            return weighted / (self.weights["nutrition"] + self.weights["time"])
+        return weighted + self.weights["proximity"] * proximity_score
+
+    def _proximity_score(self, hall: DiningHall, window: AvailabilityWindow) -> Optional[float]:
         coords = self._coords_for(window.prev_event_location) or self._coords_for(window.next_event_location)
         if coords is None:
-            return UNKNOWN_LOCATION_PROXIMITY_SCORE
+            return None
         distance = hall.distance_to(*coords)
         return max(0.0, 1.0 - distance / PROXIMITY_FAR_MILES)
 

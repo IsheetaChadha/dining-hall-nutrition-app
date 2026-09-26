@@ -65,6 +65,6 @@ class Recommendation:
     window: AvailabilityWindow
     nutrition_score: float
     time_score: float
-    proximity_score: float
+    proximity_score: Optional[float]  # None when your location around the window is unknown
     total_score: float
     suggested_items: list[MenuItem] = field(default_factory=list)

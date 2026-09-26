@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import os
 from datetime import date, datetime, time
+from typing import Optional
 
 from . import config
 from .google_calendar_client import GoogleCalendarClient
@@ -53,6 +54,10 @@ def _manual_windows(on_date: date, specs: list[str]) -> list[AvailabilityWindow]
         end = datetime.combine(on_date, _parse_clock_time(end_str), tzinfo=tz)
         windows.append(AvailabilityWindow(start=start, end=end, prev_event_location=None, next_event_location=None))
     return windows
+
+
+def _fmt_score(score: Optional[float]) -> str:
+    return "n/a" if score is None else f"{score:.2f}"
 
 
 def main() -> None:
@@ -100,7 +105,7 @@ def main() -> None:
         print(
             f"{rank}. {rec.dining_hall_name} — {rec.meal_name} "
             f"(score {rec.total_score:.2f} | nutrition {rec.nutrition_score:.2f}, "
-            f"time {rec.time_score:.2f}, proximity {rec.proximity_score:.2f})"
+            f"time {rec.time_score:.2f}, proximity {_fmt_score(rec.proximity_score)})"
         )
         print(f"   during your free window {window.start.strftime('%H:%M')}-{window.end.strftime('%H:%M')}")
         item_names = ", ".join(item.name for item in rec.suggested_items)

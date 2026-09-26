@@ -1,3 +1,4 @@
+import pytest
 from datetime import date, datetime, time, timezone
 
 from dining_planner.dining_hall import DiningHall
@@ -129,7 +130,7 @@ def test_proximity_score_favors_closer_hall_when_location_known():
     assert recs[0].dining_hall_name == "Close Hall"
 
 
-def test_unknown_location_gets_neutral_proximity_score():
+def test_unknown_location_has_no_proximity_score():
     hall = make_hall("Hall", 40.0, -86.0, "Lunch", time(11, 0), time(14, 0), [make_item("Chicken", 200, 40, 5)])
     window = AvailabilityWindow(
         start=datetime.combine(ON_DATE, time(12, 0), tzinfo=TZ),
@@ -140,7 +141,7 @@ def test_unknown_location_gets_neutral_proximity_score():
     engine = RecommendationEngine([hall], building_coords={})
 
     recs = engine.recommend(ON_DATE, [window], goal)
-    assert recs[0].proximity_score == 0.5
+    assert recs[0].proximity_score is None
 
 
 def test_location_with_room_number_matches_building_code():
@@ -188,3 +189,18 @@ def test_hall_a_mile_from_class_gets_no_proximity_credit():
 
     recs = engine.recommend(ON_DATE, [window], goal)
     assert recs[0].proximity_score == 0.0
+
+
+def test_unknown_location_scores_on_nutrition_and_time_alone():
+    hall = make_hall("Hall", 40.0, -86.0, "Lunch", time(11, 0), time(14, 0), [make_item("Chicken", 200, 40, 5)])
+    window = AvailabilityWindow(
+        start=datetime.combine(ON_DATE, time(12, 0), tzinfo=TZ),
+        end=datetime.combine(ON_DATE, time(13, 0), tzinfo=TZ),
+    )
+    goal = NutritionGoal(protein_target_g=40, calorie_limit=500)
+    weights = {"nutrition": 0.6, "time": 0.25, "proximity": 0.15}
+    engine = RecommendationEngine([hall], building_coords={}, weights=weights)
+
+    rec = engine.recommend(ON_DATE, [window], goal)[0]
+    expected = (0.6 * rec.nutrition_score + 0.25 * rec.time_score) / (0.6 + 0.25)
+    assert rec.total_score == pytest.approx(expected)
