@@ -17,7 +17,7 @@ from .nutrition_goal import NutritionGoal
 from .nutrition_scorer import NutritionScorer
 
 REASONABLE_MEAL_MINUTES = 30.0
-PROXIMITY_FAR_MILES = 2.0
+PROXIMITY_FAR_MILES = 0.75  # campus is ~1 mile across; farther than this earns no proximity credit
 UNKNOWN_LOCATION_PROXIMITY_SCORE = 0.5
 
 
