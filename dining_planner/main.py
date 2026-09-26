@@ -1,5 +1,5 @@
 """CLI entrypoint: rank dining hall/meal options for a day against your nutrition goal
-and Google Calendar availability.
+and calendar availability (iCal feed or Google Calendar API).
 
 Usage:
     python -m dining_planner.main
@@ -15,6 +15,7 @@ from datetime import date, datetime, time
 
 from . import config
 from .google_calendar_client import GoogleCalendarClient
+from .ical_calendar_client import ICalCalendarClient
 from .models import AvailabilityWindow
 from .nutrition_goal import NutritionGoal
 from .purdue_dining_client import PurdueDiningClient
@@ -64,14 +65,19 @@ def main() -> None:
     if args.window:
         windows = _manual_windows(on_date, args.window)
     else:
-        if not os.path.exists(config.CLIENT_SECRET_PATH):
+        if os.path.exists(config.CALENDAR_URL_PATH):
+            calendar_client = ICalCalendarClient.from_url_file()
+        elif os.path.exists(config.CLIENT_SECRET_PATH):
+            calendar_client = GoogleCalendarClient()
+        else:
             print(
-                f"No Google Calendar credentials found at {config.CLIENT_SECRET_PATH}.\n"
-                "Set it up per README.md, or test without it with e.g.:\n"
+                "No calendar configured. Either save your calendar's private iCal URL to\n"
+                f"  {config.CALENDAR_URL_PATH}\n"
+                f"or add Google OAuth credentials at {config.CLIENT_SECRET_PATH} (see README.md).\n"
+                "Or test without a calendar with e.g.:\n"
                 "  python -m dining_planner.main --window 11:30-13:00 --window 17:30-19:00"
             )
             return
-        calendar_client = GoogleCalendarClient()
         windows = calendar_client.get_availability_windows(
             on_date, _parse_clock_time(args.day_start), _parse_clock_time(args.day_end)
         )

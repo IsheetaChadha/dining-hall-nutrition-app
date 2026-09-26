@@ -4,6 +4,7 @@ __pycache__/
 venv/
 credentials/client_secret*.json
 credentials/token.json
+credentials/calendar_url.txt
 *.egg-info/
 .pytest_cache/
 cache/

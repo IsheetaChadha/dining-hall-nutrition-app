@@ -8,7 +8,6 @@ browser for consent and caches a refresh token at config.TOKEN_PATH.
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass
 from datetime import date, datetime, time
 from typing import Optional
 
@@ -18,15 +17,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
 from . import config
+from .calendar_events import CalendarEvent, availability_windows_from_events
 from .models import AvailabilityWindow
-
-
-@dataclass
-class CalendarEvent:
-    start: datetime
-    end: datetime
-    location: Optional[str]
-    summary: str
 
 
 class GoogleCalendarClient:
@@ -101,37 +93,9 @@ class GoogleCalendarClient:
         min_gap_minutes: float = 15,
     ) -> list[AvailabilityWindow]:
         tz = datetime.now().astimezone().tzinfo
-        window_start = datetime.combine(on_date, day_start, tzinfo=tz)
-        window_end = datetime.combine(on_date, day_end, tzinfo=tz)
-
-        events = [e for e in self.get_events(on_date) if e.end > window_start and e.start < window_end]
-        events.sort(key=lambda e: e.start)
-
-        windows: list[AvailabilityWindow] = []
-        cursor = window_start
-        prev_location: Optional[str] = None
-        for event in events:
-            clipped_start = max(event.start, window_start)
-            clipped_end = min(event.end, window_end)
-            if clipped_start > cursor:
-                gap_minutes = (clipped_start - cursor).total_seconds() / 60
-                if gap_minutes >= min_gap_minutes:
-                    windows.append(
-                        AvailabilityWindow(
-                            start=cursor,
-                            end=clipped_start,
-                            prev_event_location=prev_location,
-                            next_event_location=event.location,
-                        )
-                    )
-            cursor = max(cursor, clipped_end)
-            prev_location = event.location
-
-        if (window_end - cursor).total_seconds() / 60 >= min_gap_minutes:
-            windows.append(
-                AvailabilityWindow(start=cursor, end=window_end, prev_event_location=prev_location, next_event_location=None)
-            )
-        return windows
+        return availability_windows_from_events(
+            self.get_events(on_date), on_date, day_start, day_end, tz, min_gap_minutes
+        )
 
 
 def _parse_event_datetime(endpoint: dict) -> Optional[datetime]:

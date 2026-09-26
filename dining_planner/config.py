@@ -55,3 +55,6 @@ GOOGLE_CALENDAR_SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
 CREDENTIALS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "credentials")
 CLIENT_SECRET_PATH = os.path.join(CREDENTIALS_DIR, "client_secret.json")
 TOKEN_PATH = os.path.join(CREDENTIALS_DIR, "token.json")
+# Private iCal feed URL (e.g. Google Calendar's "Secret address in iCal format").
+# When present, it's used instead of the Google Calendar API. Gitignored.
+CALENDAR_URL_PATH = os.path.join(CREDENTIALS_DIR, "calendar_url.txt")

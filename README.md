@@ -12,7 +12,20 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Google Calendar access
+### Calendar access
+
+**Easiest: private iCal link (no Google Cloud needed).** In Google Calendar on the web, go to
+Settings → your calendar → *Integrate calendar* → copy **Secret address in iCal format**
+(Outlook/Apple publish links work too), and save it:
+
+```bash
+echo 'https://calendar.google.com/calendar/ical/.../basic.ics' > credentials/calendar_url.txt
+```
+
+That file is gitignored — treat the URL like a password. When it exists it's used instead of
+the Google Calendar API.
+
+**Alternative: Google Calendar API (OAuth).**
 
 1. Create a Google Cloud project and enable the **Google Calendar API**.
 2. Create an OAuth client ID of type **Desktop app**, download the JSON, and save it as
