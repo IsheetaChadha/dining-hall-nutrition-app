@@ -24,6 +24,10 @@ NUTRITION_SUBWEIGHTS = {
 # Soft ceiling used to scale the fat penalty; a plate at/above this is treated as fully "bad" on fat.
 FAT_SOFT_CEILING_G = 100.0
 
+# Serving sizes that mark an add-on (cheese, sauce, spread) rather than a dish; a plate
+# is built around a dish first so a topping's great protein-per-calorie can't crowd it out.
+TOPPING_SERVING_SIZES = {"tablespoon", "teaspoon", "ounce", "1 oz serving"}
+
 # A single-meal plate won't have more than this many items suggested.
 MAX_PLATE_ITEMS = 6
 

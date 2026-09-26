@@ -4,7 +4,7 @@ from dining_planner.nutrition_goal import NutritionGoal
 from dining_planner.nutrition_scorer import NutritionScorer
 
 
-def make_item(name, calories, protein_g, fat_g, carbs_g=0.0, ingredients=""):
+def make_item(name, calories, protein_g, fat_g, carbs_g=0.0, ingredients="", serving_size=""):
     return MenuItem(
         id=name,
         name=name,
@@ -12,7 +12,7 @@ def make_item(name, calories, protein_g, fat_g, carbs_g=0.0, ingredients=""):
         meal_name="Lunch",
         is_vegetarian=False,
         ingredients_text=ingredients,
-        nutrition=NutritionInfo(calories=calories, protein_g=protein_g, fat_g=fat_g, carbs_g=carbs_g),
+        nutrition=NutritionInfo(calories=calories, protein_g=protein_g, fat_g=fat_g, carbs_g=carbs_g, serving_size=serving_size),
     )
 
 
@@ -93,3 +93,24 @@ def test_score_is_zero_when_no_eligible_items():
     score, plate = scorer.score([], goal)
     assert score == 0.0
     assert plate == []
+
+
+def test_best_plate_is_built_around_a_main_dish_not_a_topping():
+    # Parmesan has the best protein-per-calorie, but taking it first would leave no room for the entree.
+    items = [
+        make_item("Grated Parmesan Cheese", calories=113, protein_g=11.3, fat_g=7, serving_size="Ounce"),
+        make_item("Indian Butter Chicken", calories=431, protein_g=25.1, fat_g=20, serving_size="6 oz Ladle"),
+    ]
+    goal = NutritionGoal(protein_target_g=35, calorie_limit=500)
+    selected, _ = NutritionScorer().best_plate(items, goal)
+    assert [i.name for i in selected] == ["Indian Butter Chicken"]
+
+
+def test_best_plate_stops_adding_items_once_protein_target_is_met():
+    items = [
+        make_item("Chicken Breast", calories=200, protein_g=40, fat_g=5),
+        make_item("Shredded Cheddar", calories=110, protein_g=7, fat_g=9, serving_size="Ounce"),
+    ]
+    goal = NutritionGoal(protein_target_g=35, calorie_limit=600)
+    selected, _ = NutritionScorer().best_plate(items, goal)
+    assert [i.name for i in selected] == ["Chicken Breast"]

@@ -39,6 +39,17 @@ class NutritionScorer:
             reverse=True,
         )
 
+        # Anchor the plate on the highest-protein main dish that fits the calorie budget.
+        mains = [
+            item
+            for item in candidates
+            if not _is_topping(item) and item.nutrition.calories <= goal.calorie_limit
+        ]
+        if mains:
+            anchor = max(mains, key=lambda item: item.nutrition.protein_g)
+            candidates.remove(anchor)
+            candidates.insert(0, anchor)
+
         selected: list[MenuItem] = []
         totals = PlateTotals()
         for item in candidates:
@@ -54,6 +65,8 @@ class NutritionScorer:
             totals.carbs_g += item.nutrition.carbs_g
             if totals.calories >= goal.calorie_limit:
                 break
+            if goal.protein_target_g > 0 and totals.protein_g >= goal.protein_target_g:
+                break  # protein score is capped at the target; more items would only add fat
 
         return selected, totals
 
@@ -80,3 +93,7 @@ class NutritionScorer:
             + weights["fat"] * fat_score
         )
         return nutrition_score, selected
+
+
+def _is_topping(item: MenuItem) -> bool:
+    return item.nutrition.serving_size.strip().lower() in config.TOPPING_SERVING_SIZES

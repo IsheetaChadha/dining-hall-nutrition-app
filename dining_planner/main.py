@@ -28,6 +28,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--date", default=None, help="YYYY-MM-DD, defaults to today")
     parser.add_argument("--protein", type=float, default=100.0, help="Daily protein target in grams")
     parser.add_argument("--calories", type=float, default=1800.0, help="Daily calorie limit")
+    parser.add_argument("--meals", type=int, default=3, help="Meals per day; each plate targets this share of the daily goal")
     parser.add_argument("--day-start", default="07:00", help="Earliest time to consider for availability (HH:MM)")
     parser.add_argument("--day-end", default="21:00", help="Latest time to consider for availability (HH:MM)")
     parser.add_argument(
@@ -91,7 +92,7 @@ def main() -> None:
         print(f"No free-time windows found for {on_date}.")
         return
 
-    goal = NutritionGoal(protein_target_g=args.protein, calorie_limit=args.calories)
+    goal = NutritionGoal(protein_target_g=args.protein, calorie_limit=args.calories).per_meal(args.meals)
     engine = RecommendationEngine(halls)
     recommendations = engine.recommend(on_date, windows, goal)
 
