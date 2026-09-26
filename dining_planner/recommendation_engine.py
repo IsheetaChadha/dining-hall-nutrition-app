@@ -90,10 +90,14 @@ class RecommendationEngine:
         return max(0.0, (earliest_end - latest_start).total_seconds() / 60)
 
     def _proximity_score(self, hall: DiningHall, window: AvailabilityWindow) -> float:
-        coords = self.building_coords.get(window.prev_event_location or "") or self.building_coords.get(
-            window.next_event_location or ""
-        )
+        coords = self._coords_for(window.prev_event_location) or self._coords_for(window.next_event_location)
         if coords is None:
             return UNKNOWN_LOCATION_PROXIMITY_SCORE
         distance = hall.distance_to(*coords)
         return max(0.0, 1.0 - distance / PROXIMITY_FAR_MILES)
+
+    def _coords_for(self, location: Optional[str]) -> Optional[tuple[float, float]]:
+        # Exact match first, then the building code before the room number ("WALC 2121" -> "WALC").
+        if not location:
+            return None
+        return self.building_coords.get(location) or self.building_coords.get(location.split()[0])

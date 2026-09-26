@@ -46,10 +46,15 @@ DEFAULT_RESTRICTED_KEYWORDS = [
     "gelatin",
 ]
 
-# Fill in with the buildings you actually have classes/events in, as they'll
-# appear in your Google Calendar event `location` field.
-# Example: "WALC": (40.4249, -86.9151)
-BUILDING_COORDS: dict[str, tuple[float, float]] = {}
+# Buildings you have classes/events in -> (lat, lon). Keys are Purdue building codes;
+# an event location like "WALC 2121" matches "WALC". Coordinates from OpenStreetMap.
+BUILDING_COORDS: dict[str, tuple[float, float]] = {
+    "DSAI": (40.4290, -86.9149),  # Hall of Data Science and AI
+    "LILY": (40.4232, -86.9183),  # Lilly Hall of Life Sciences
+    "LWSN": (40.4278, -86.9170),  # Lawson Hall
+    "SMTH": (40.4234, -86.9169),  # Smith Hall
+    "WALC": (40.4274, -86.9132),  # Wilmeth Active Learning Center
+}
 
 GOOGLE_CALENDAR_SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
 CREDENTIALS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "credentials")

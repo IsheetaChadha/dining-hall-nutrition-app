@@ -141,3 +141,17 @@ def test_unknown_location_gets_neutral_proximity_score():
 
     recs = engine.recommend(ON_DATE, [window], goal)
     assert recs[0].proximity_score == 0.5
+
+
+def test_location_with_room_number_matches_building_code():
+    hall = make_hall("Hall", 40.0, -86.0, "Lunch", time(11, 0), time(14, 0), [make_item("Chicken", 200, 40, 5)])
+    window = AvailabilityWindow(
+        start=datetime.combine(ON_DATE, time(12, 0), tzinfo=TZ),
+        end=datetime.combine(ON_DATE, time(13, 0), tzinfo=TZ),
+        prev_event_location="WALC 2121",
+    )
+    goal = NutritionGoal(protein_target_g=40, calorie_limit=500)
+    engine = RecommendationEngine([hall], building_coords={"WALC": (40.0, -86.0)})
+
+    recs = engine.recommend(ON_DATE, [window], goal)
+    assert recs[0].proximity_score == 1.0

@@ -36,8 +36,9 @@ the Google Calendar API.
 ### Campus building coordinates
 
 Edit `dining_planner/config.py` and fill in `BUILDING_COORDS` with the buildings you
-actually have classes/events in (name as it appears in your calendar event locations ->
-`(lat, lon)`). Any calendar event location not in this map just skips proximity scoring.
+actually have classes/events in, keyed by building code (`"WALC"` matches an event
+location of `WALC 2121`) -> `(lat, lon)`. Any calendar event location not in this map
+just skips proximity scoring.
 
 ## Running
 
