@@ -79,7 +79,11 @@ class RecommendationEngine:
                     )
 
         recommendations.sort(key=lambda r: r.total_score, reverse=True)
-        return recommendations
+        # A meal overlapping several free windows would otherwise repeat; keep its best window.
+        best: dict[tuple[str, str], Recommendation] = {}
+        for rec in recommendations:
+            best.setdefault((rec.dining_hall_name, rec.meal_name), rec)
+        return list(best.values())
 
     def _overlap_minutes(self, window: AvailabilityWindow, on_date: date, meal_start: time, meal_end: time) -> float:
         tz = window.start.tzinfo
