@@ -49,6 +49,7 @@ DEFAULT_RESTRICTED_KEYWORDS = [
 # Buildings you have classes/events in -> (lat, lon). Keys are Purdue building codes;
 # an event location like "WALC 2121" matches "WALC". Coordinates from OpenStreetMap.
 BUILDING_COORDS: dict[str, tuple[float, float]] = {
+    "BHEE": (40.4286, -86.9120),  # Brown Family Hall (the former Electrical Engineering Building)
     "DSAI": (40.4290, -86.9149),  # Hall of Data Science and AI
     "LILY": (40.4232, -86.9183),  # Lilly Hall of Life Sciences
     "LWSN": (40.4278, -86.9170),  # Lawson Hall
