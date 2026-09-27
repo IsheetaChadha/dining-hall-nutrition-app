@@ -106,6 +106,20 @@ def test_best_plate_is_built_around_a_main_dish_not_a_topping():
     assert [i.name for i in selected] == ["Indian Butter Chicken"]
 
 
+def test_best_plate_anchors_on_highest_protein_per_calorie_main_not_highest_raw_protein():
+    # Nugget has more raw protein (32.4g vs 19.7g) but is less protein-dense per calorie
+    # (0.059 vs 0.071 g/cal) since its serving is much larger. The anchor should prefer
+    # the more calorie-efficient main dish, matching the protein-per-calorie sort used
+    # everywhere else in best_plate.
+    items = [
+        make_item("Vegetarian Chicken Nugget", calories=547, protein_g=32.4, fat_g=22.3, serving_size="6 Wing Serving"),
+        make_item("Chicken Thigh", calories=276, protein_g=19.7, fat_g=19.8, serving_size="Thigh"),
+    ]
+    goal = NutritionGoal(protein_target_g=15, calorie_limit=600)
+    selected, _ = NutritionScorer().best_plate(items, goal)
+    assert [i.name for i in selected] == ["Chicken Thigh"]
+
+
 def test_best_plate_stops_adding_items_once_protein_target_is_met():
     items = [
         make_item("Chicken Breast", calories=200, protein_g=40, fat_g=5),

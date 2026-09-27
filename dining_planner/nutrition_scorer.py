@@ -34,19 +34,16 @@ class NutritionScorer:
             deduped.setdefault(item.id, item)
 
         candidates = [item for item in deduped.values() if goal.dietary_filter.is_allowed(item) and item.nutrition]
-        candidates.sort(
-            key=lambda item: item.nutrition.protein_g / max(item.nutrition.calories, 1.0),
-            reverse=True,
-        )
+        candidates.sort(key=_protein_per_calorie, reverse=True)
 
-        # Anchor the plate on the highest-protein main dish that fits the calorie budget.
+        # Anchor the plate on the most protein-efficient main dish that fits the calorie budget.
         mains = [
             item
             for item in candidates
             if not _is_topping(item) and item.nutrition.calories <= goal.calorie_limit
         ]
         if mains:
-            anchor = max(mains, key=lambda item: item.nutrition.protein_g)
+            anchor = max(mains, key=_protein_per_calorie)
             candidates.remove(anchor)
             candidates.insert(0, anchor)
 
@@ -97,3 +94,7 @@ class NutritionScorer:
 
 def _is_topping(item: MenuItem) -> bool:
     return item.nutrition.serving_size.strip().lower() in config.TOPPING_SERVING_SIZES
+
+
+def _protein_per_calorie(item: MenuItem) -> float:
+    return item.nutrition.protein_g / max(item.nutrition.calories, 1.0)
