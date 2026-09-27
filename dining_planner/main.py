@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import os
+from dataclasses import replace
 from datetime import date, datetime, time
 from typing import Optional
 
@@ -61,6 +62,20 @@ def _fmt_score(score: Optional[float]) -> str:
     return "n/a" if score is None else f"{score:.2f}"
 
 
+def _clip_to_now(windows: list[AvailabilityWindow], on_date: date, now: datetime) -> list[AvailabilityWindow]:
+    """Drop the already-passed part of today's free windows so a meal that's over
+    (e.g. lunch, once it's dinner time) doesn't still get suggested."""
+    if on_date != now.date():
+        return windows
+
+    clipped = []
+    for window in windows:
+        start = max(window.start, now)
+        if start < window.end:
+            clipped.append(replace(window, start=start))
+    return clipped
+
+
 def main() -> None:
     args = parse_args()
     on_date = date.fromisoformat(args.date) if args.date else date.today()
@@ -87,6 +102,7 @@ def main() -> None:
         windows = calendar_client.get_availability_windows(
             on_date, _parse_clock_time(args.day_start), _parse_clock_time(args.day_end)
         )
+        windows = _clip_to_now(windows, on_date, datetime.now().astimezone())
 
     if not windows:
         print(f"No free-time windows found for {on_date}.")
