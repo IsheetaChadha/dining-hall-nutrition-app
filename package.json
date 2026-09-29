@@ -1,0 +1,12 @@
+{
+  "name": "dining-planner",
+  "private": true,
+  "workspaces": ["packages/*", "web"],
+  "scripts": {
+    "gen:types": "python3 scripts/export_openapi.py packages/core/openapi.json && npm run gen:types -w @dining/core",
+    "test": "npm test -w @dining/core && npm test -w web",
+    "typecheck": "npm run typecheck -w @dining/core && npm run typecheck -w web",
+    "dev:web": "npm run dev -w web",
+    "build": "npm run build -w web"
+  }
+}

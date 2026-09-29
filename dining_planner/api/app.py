@@ -13,6 +13,7 @@ from fastapi.staticfiles import StaticFiles
 
 from .errors import error_response, install_error_handlers
 from .routes import meta, recommendations, settings
+from .schemas import ErrorResponse
 
 WEB_DIST = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "web", "dist")
 
@@ -21,7 +22,8 @@ def create_app(serve_web: bool = True) -> FastAPI:
     app = FastAPI(title="Dining Planner", version="1.0.0", openapi_url="/api/openapi.json", docs_url="/api/docs")
     install_error_handlers(app)
 
-    api = APIRouter(prefix="/api/v1")
+    errors = {status: {"model": ErrorResponse} for status in (409, 422, 502)}
+    api = APIRouter(prefix="/api/v1", responses=errors)
     for module in (recommendations, settings, meta):
         api.include_router(module.router)
 

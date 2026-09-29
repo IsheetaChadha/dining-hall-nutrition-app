@@ -1,0 +1,808 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Dining Planner",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/recommendations": {
+      "post": {
+        "tags": [
+          "recommendations"
+        ],
+        "summary": "Recommendations",
+        "description": "Ranked hall/meal picks. With no date or meal, plans the rest of today from now on;\nmissing goal fields fall back to the user's saved settings.",
+        "operationId": "recommendations_api_v1_recommendations_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecommendationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendationsResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/settings": {
+      "get": {
+        "tags": [
+          "settings"
+        ],
+        "summary": "Get Settings",
+        "operationId": "get_settings_api_v1_settings_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Settings"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "settings"
+        ],
+        "summary": "Put Settings",
+        "operationId": "put_settings_api_v1_settings_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Settings"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Settings"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/meals": {
+      "get": {
+        "tags": [
+          "meta"
+        ],
+        "summary": "Meals",
+        "description": "Meal names served on `date` (default today) across all halls, in serving order.",
+        "operationId": "meals_api_v1_meals_get",
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MealsResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Gateway"
+          }
+        }
+      }
+    },
+    "/api/v1/meta": {
+      "get": {
+        "tags": [
+          "meta"
+        ],
+        "summary": "Meta",
+        "operationId": "meta_api_v1_meta_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MetaResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ErrorBody": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "fields": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fields"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "ErrorBody"
+      },
+      "ErrorResponse": {
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "title": "ErrorResponse"
+      },
+      "Goal": {
+        "properties": {
+          "protein_g": {
+            "type": "number",
+            "title": "Protein G"
+          },
+          "calories": {
+            "type": "number",
+            "title": "Calories"
+          }
+        },
+        "type": "object",
+        "required": [
+          "protein_g",
+          "calories"
+        ],
+        "title": "Goal"
+      },
+      "MealsResponse": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "meals": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Meals"
+          }
+        },
+        "type": "object",
+        "required": [
+          "date",
+          "meals"
+        ],
+        "title": "MealsResponse"
+      },
+      "MetaResponse": {
+        "properties": {
+          "calendar_source": {
+            "type": "string",
+            "enum": [
+              "ical",
+              "google",
+              "none"
+            ],
+            "title": "Calendar Source"
+          }
+        },
+        "type": "object",
+        "required": [
+          "calendar_source"
+        ],
+        "title": "MetaResponse"
+      },
+      "Nutrition": {
+        "properties": {
+          "calories": {
+            "type": "number",
+            "title": "Calories"
+          },
+          "protein_g": {
+            "type": "number",
+            "title": "Protein G"
+          },
+          "fat_g": {
+            "type": "number",
+            "title": "Fat G"
+          },
+          "carbs_g": {
+            "type": "number",
+            "title": "Carbs G"
+          },
+          "serving_size": {
+            "type": "string",
+            "title": "Serving Size"
+          }
+        },
+        "type": "object",
+        "required": [
+          "calories",
+          "protein_g",
+          "fat_g",
+          "carbs_g",
+          "serving_size"
+        ],
+        "title": "Nutrition"
+      },
+      "PlateItem": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "station": {
+            "type": "string",
+            "title": "Station"
+          },
+          "is_vegetarian": {
+            "type": "boolean",
+            "title": "Is Vegetarian"
+          },
+          "allergens": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Allergens"
+          },
+          "nutrition": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Nutrition"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "station",
+          "is_vegetarian",
+          "allergens",
+          "nutrition"
+        ],
+        "title": "PlateItem"
+      },
+      "RecommendationOut": {
+        "properties": {
+          "rank": {
+            "type": "integer",
+            "title": "Rank"
+          },
+          "dining_hall": {
+            "type": "string",
+            "title": "Dining Hall"
+          },
+          "meal": {
+            "type": "string",
+            "title": "Meal"
+          },
+          "window": {
+            "$ref": "#/components/schemas/Window"
+          },
+          "scores": {
+            "$ref": "#/components/schemas/Scores"
+          },
+          "plate": {
+            "items": {
+              "$ref": "#/components/schemas/PlateItem"
+            },
+            "type": "array",
+            "title": "Plate"
+          }
+        },
+        "type": "object",
+        "required": [
+          "rank",
+          "dining_hall",
+          "meal",
+          "window",
+          "scores",
+          "plate"
+        ],
+        "title": "RecommendationOut"
+      },
+      "RecommendationRequest": {
+        "properties": {
+          "date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date"
+          },
+          "meal": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Meal"
+          },
+          "protein": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Protein"
+          },
+          "calories": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calories"
+          },
+          "meals": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 6.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Meals"
+          }
+        },
+        "type": "object",
+        "title": "RecommendationRequest"
+      },
+      "RecommendationsResponse": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "meal": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Meal"
+          },
+          "goal_per_meal": {
+            "$ref": "#/components/schemas/Goal"
+          },
+          "windows": {
+            "items": {
+              "$ref": "#/components/schemas/Window"
+            },
+            "type": "array",
+            "title": "Windows"
+          },
+          "recommendations": {
+            "items": {
+              "$ref": "#/components/schemas/RecommendationOut"
+            },
+            "type": "array",
+            "title": "Recommendations"
+          },
+          "notice": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notice"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "date",
+          "meal",
+          "goal_per_meal",
+          "windows",
+          "recommendations"
+        ],
+        "title": "RecommendationsResponse"
+      },
+      "Scores": {
+        "properties": {
+          "total": {
+            "type": "number",
+            "title": "Total"
+          },
+          "nutrition": {
+            "type": "number",
+            "title": "Nutrition"
+          },
+          "time": {
+            "type": "number",
+            "title": "Time"
+          },
+          "proximity": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Proximity",
+            "description": "null when your location around the window is unknown"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "nutrition",
+          "time",
+          "proximity"
+        ],
+        "title": "Scores"
+      },
+      "Settings": {
+        "properties": {
+          "protein_target_g": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Protein Target G"
+          },
+          "calorie_limit": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Calorie Limit"
+          },
+          "meals_per_day": {
+            "type": "integer",
+            "maximum": 6.0,
+            "minimum": 1.0,
+            "title": "Meals Per Day"
+          },
+          "day_start": {
+            "type": "string",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "title": "Day Start",
+            "description": "24-hour HH:MM"
+          },
+          "day_end": {
+            "type": "string",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "title": "Day End",
+            "description": "24-hour HH:MM"
+          },
+          "restricted_keywords": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Restricted Keywords"
+          },
+          "building_coords": {
+            "additionalProperties": {
+              "prefixItems": [
+                {
+                  "type": "number",
+                  "maximum": 90.0,
+                  "minimum": -90.0
+                },
+                {
+                  "type": "number",
+                  "maximum": 180.0,
+                  "minimum": -180.0
+                }
+              ],
+              "type": "array",
+              "maxItems": 2,
+              "minItems": 2
+            },
+            "type": "object",
+            "title": "Building Coords"
+          }
+        },
+        "type": "object",
+        "required": [
+          "protein_target_g",
+          "calorie_limit",
+          "meals_per_day",
+          "day_start",
+          "day_end",
+          "restricted_keywords",
+          "building_coords"
+        ],
+        "title": "Settings"
+      },
+      "Window": {
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End"
+          },
+          "prev_event_location": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prev Event Location"
+          },
+          "next_event_location": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Event Location"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start",
+          "end"
+        ],
+        "title": "Window"
+      }
+    }
+  }
+}
