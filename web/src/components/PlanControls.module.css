@@ -1,0 +1,66 @@
+.controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-4) var(--space-6); }
+.label { display: block; color: var(--muted); font-size: var(--step--1); margin-bottom: var(--space-1); }
+.when { display: flex; align-items: flex-end; gap: var(--space-2); }
+.now {
+  height: 2.5rem;
+  padding: 0 var(--space-4);
+  border: 1.5px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.now[aria-pressed='true'] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.date input {
+  height: 2.5rem;
+  padding: 0 var(--space-3);
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+}
+.meals { display: flex; flex-wrap: wrap; gap: var(--space-2); border: 0; margin: 0; padding: 0; }
+.meals legend { float: left; width: 100%; }
+.chip { position: relative; }
+.chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.chip span {
+  display: inline-flex;
+  align-items: center;
+  height: 2.5rem;
+  padding: 0 var(--space-4);
+  border-radius: 999px;
+  border: 1.5px solid var(--line-strong);
+  background: var(--surface);
+  font-weight: 500;
+}
+.chip input:checked + span { background: var(--gold); border-color: var(--gold); color: var(--on-gold); font-weight: 600; }
+.chip input:focus-visible + span { outline: 3px solid var(--focus); outline-offset: 2px; }
+.goals { flex-basis: 100%; }
+.goals summary { cursor: pointer; color: var(--ink); font-weight: 500; width: fit-content; }
+.goalForm { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-3); margin-top: var(--space-3); }
+.goalField input {
+  width: 9rem;
+  height: 2.5rem;
+  padding: 0 var(--space-3);
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+.apply {
+  height: 2.5rem;
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--ink);
+  color: var(--surface);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.hint { margin: var(--space-2) 0 0; color: var(--muted); font-size: var(--step--1); }

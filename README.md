@@ -42,12 +42,42 @@ just skips proximity scoring.
 
 ## Running
 
+### Web app
+
+```bash
+npm install                                      # once
+python -m uvicorn dining_planner.api.app:app --reload --port 8000   # API
+npm run dev:web                                  # web UI at http://localhost:5173
+```
+
+Or as one process: `npm run build`, then run only the uvicorn command and open
+http://localhost:8000 — the API serves the built app from `web/dist`.
+
+Settings saved in the web app (goals, day hours, foods to avoid, buildings) live in
+`data/app.db` (gitignored) and override the defaults in `config.py`.
+
+### CLI
+
 ```bash
 python -m dining_planner.main
+python -m dining_planner.main --meal Dinner --date 2026-09-30
 ```
+
+## Project layout
+
+- `dining_planner/` — the planner engine; `service.plan_day()` is the entry point
+  shared by the CLI and the API.
+- `dining_planner/api/` — FastAPI JSON API under `/api/v1` (docs at `/api/docs`).
+- `packages/core/` — TypeScript API client, types and formatters with no DOM or React
+  dependencies, so a future React Native app can reuse them unchanged.
+- `web/` — the React desktop web app.
+
+After changing an API schema, regenerate the client types with `npm run gen:types`.
 
 ## Tests
 
 ```bash
-pytest
+pytest            # Python engine + API
+npm test          # core + web
+npm run typecheck
 ```

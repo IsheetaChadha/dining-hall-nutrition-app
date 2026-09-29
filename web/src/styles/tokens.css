@@ -1,0 +1,67 @@
+:root {
+  --bg: #edf0eb;
+  --surface: #ffffff;
+  --ink: #1e2923;
+  --muted: #5f6a63;
+  --line: #dde3dc;
+  --line-strong: #c3ccc4;
+  --hover: #f3f5f2;
+  --gold: #b8994d;
+  --gold-wash: #efe6cc;
+  --on-gold: #1e2923;
+  --protein: #2e6b5e;
+  --danger: #b3261e;
+  --warn: #b8994d;
+  --warn-wash: #f7f1e1;
+  --busy: #dfe4dd;
+  --busy-bg: #e8ece6;
+  --focus: #2e6b5e;
+
+  --font-display: 'Bricolage Grotesque', 'Public Sans', system-ui, sans-serif;
+  --font-body: 'Public Sans', system-ui, -apple-system, sans-serif;
+
+  /* Modular scale, ratio 1.25 from 1rem */
+  --step--2: 0.72rem;
+  --step--1: 0.85rem;
+  --step-0: 1rem;
+  --step-1: 1.25rem;
+  --step-2: 1.56rem;
+  --step-3: clamp(1.8rem, 1.4rem + 1.6vw, 2.44rem);
+  --step-4: clamp(2.2rem, 1.6rem + 2.6vw, 3.4rem);
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+
+  --radius-sm: 6px;
+  --radius-lg: 14px;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #131915;
+    --surface: #1c2420;
+    --ink: #e4eae6;
+    --muted: #9aa69f;
+    --line: #2a342f;
+    --line-strong: #3a4640;
+    --hover: #232d28;
+    --gold: #d2b66e;
+    --gold-wash: #3a3322;
+    --on-gold: #131915;
+    --protein: #7cc2b0;
+    --danger: #f08a80;
+    --warn: #d2b66e;
+    --warn-wash: #2a261b;
+    --busy: #1f2823;
+    --busy-bg: #18201c;
+    --focus: #7cc2b0;
+    color-scheme: dark;
+  }
+}

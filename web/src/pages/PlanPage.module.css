@@ -1,0 +1,11 @@
+.page { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+.header { display: grid; gap: var(--space-5); }
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--step-4);
+  font-weight: 800;
+  font-stretch: 80%;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+}

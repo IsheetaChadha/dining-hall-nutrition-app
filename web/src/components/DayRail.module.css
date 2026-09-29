@@ -1,0 +1,49 @@
+.rail { margin: 0; display: grid; gap: var(--space-2); }
+.caption { color: var(--muted); font-size: var(--step--1); }
+.track {
+  position: relative;
+  height: 3.25rem;
+  margin-bottom: 1.25rem;
+  border-radius: var(--radius-sm);
+  background: repeating-linear-gradient(135deg, var(--busy) 0 6px, transparent 6px 12px);
+  background-color: var(--busy-bg);
+}
+.tick { position: absolute; top: 100%; width: 1px; height: 6px; background: var(--line-strong); }
+.tickLabel { position: absolute; top: 8px; left: 0; transform: translateX(-50%); font-size: var(--step--2); color: var(--muted); font-variant-numeric: tabular-nums; }
+.first .tickLabel { transform: none; }
+.last .tickLabel { transform: translateX(-100%); }
+.windows { list-style: none; margin: 0; padding: 0; position: absolute; inset: 0; }
+.window {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  min-width: 4px;
+  display: flex;
+  align-items: center;
+  background: var(--surface);
+  border: 2px solid var(--gold);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.best { background: var(--gold); }
+.ranks { display: flex; gap: 4px; padding: 0 6px; }
+.rank {
+  display: grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--surface);
+  font-size: var(--step--2);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.more { font-size: var(--step--2); font-weight: 700; color: var(--on-gold); white-space: nowrap; }
+.window:not(.best) .more { color: var(--ink); }
+.now { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--ink); border-radius: 1px; }
+.now::before { content: ''; position: absolute; top: -4px; left: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--ink); }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (max-width: 640px) {
+  .tick:nth-child(even):not(.last) .tickLabel { display: none; }
+}
