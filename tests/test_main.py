@@ -1,7 +1,8 @@
-from datetime import date, datetime, timezone
+from datetime import date, datetime, time, timezone
 
-from dining_planner.main import _clip_to_now
+from dining_planner.main import parse_args, settings_from_args
 from dining_planner.models import AvailabilityWindow
+from dining_planner.service import clip_to_now as _clip_to_now
 
 TZ = timezone.utc
 TODAY = date(2026, 9, 27)
@@ -57,3 +58,15 @@ def test_leaves_windows_unchanged_when_on_date_is_not_today():
     result = _clip_to_now(windows, future_date, now)
 
     assert result == windows
+
+
+def test_cli_args_become_settings_with_config_defaults_for_the_rest():
+    args = parse_args(["--protein", "120", "--day-start", "08:30", "--meal", "Lunch"])
+
+    settings = settings_from_args(args)
+
+    assert settings.protein_target_g == 120
+    assert settings.calorie_limit == 1800
+    assert settings.day_start == time(8, 30)
+    assert "beef" in settings.restricted_keywords
+    assert args.meal == "Lunch"

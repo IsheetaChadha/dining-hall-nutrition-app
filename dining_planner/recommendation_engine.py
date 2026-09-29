@@ -38,11 +38,16 @@ class RecommendationEngine:
         on_date: date,
         windows: list[AvailabilityWindow],
         goal: NutritionGoal,
+        meal_name: Optional[str] = None,
     ) -> list[Recommendation]:
+        """Rank every reachable (hall, meal); `meal_name` (case-insensitive) limits it to one meal."""
+        wanted_meal = meal_name.lower() if meal_name else None
         recommendations: list[Recommendation] = []
         for window in windows:
             for hall in self.dining_halls:
                 for meal_name, (meal_start, meal_end) in hall.open_meal_windows_on(on_date).items():
+                    if wanted_meal and meal_name.lower() != wanted_meal:
+                        continue
                     overlap_minutes = self._overlap_minutes(window, on_date, meal_start, meal_end)
                     if overlap_minutes <= 0:
                         continue

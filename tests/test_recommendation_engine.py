@@ -5,6 +5,7 @@ from dining_planner.dining_hall import DiningHall
 from dining_planner.models import AvailabilityWindow, DailyMenu, Meal, MenuItem, NutritionInfo
 from dining_planner.nutrition_goal import NutritionGoal
 from dining_planner.recommendation_engine import RecommendationEngine
+from tests import factories
 
 TZ = timezone.utc
 ON_DATE = date(2026, 9, 8)
@@ -204,3 +205,19 @@ def test_unknown_location_scores_on_nutrition_and_time_alone():
     rec = engine.recommend(ON_DATE, [window], goal)[0]
     expected = (0.6 * rec.nutrition_score + 0.25 * rec.time_score) / (0.6 + 0.25)
     assert rec.total_score == pytest.approx(expected)
+
+
+def test_meal_name_filter_keeps_only_that_meal():
+    items = [make_item("Chicken", 200, 40, 5)]
+    hall = factories.make_hall(
+        "Hall", ON_DATE, [("Lunch", time(11, 0), time(14, 0), items), ("Dinner", time(17, 0), time(20, 0), items)]
+    )
+    window = AvailabilityWindow(
+        start=datetime.combine(ON_DATE, time(9, 0), tzinfo=TZ),
+        end=datetime.combine(ON_DATE, time(21, 0), tzinfo=TZ),
+    )
+    goal = NutritionGoal(protein_target_g=40, calorie_limit=500)
+    engine = RecommendationEngine([hall], building_coords={})
+
+    recs = engine.recommend(ON_DATE, [window], goal, meal_name="dinner")
+    assert [r.meal_name for r in recs] == ["Dinner"]

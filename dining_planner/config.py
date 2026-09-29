@@ -21,6 +21,13 @@ NUTRITION_SUBWEIGHTS = {
     "fat": 0.15,
 }
 
+# Default daily goal and day hours, used by the CLI and to seed a new user's saved settings.
+DEFAULT_PROTEIN_TARGET_G = 100.0
+DEFAULT_CALORIE_LIMIT = 1800.0
+DEFAULT_MEALS_PER_DAY = 3
+DEFAULT_DAY_START = "07:00"
+DEFAULT_DAY_END = "21:00"
+
 # Soft ceiling used to scale the fat penalty; a plate at/above this is treated as fully "bad" on fat.
 FAT_SOFT_CEILING_G = 100.0
 
