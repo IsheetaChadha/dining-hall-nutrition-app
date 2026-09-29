@@ -8,3 +8,6 @@ credentials/calendar_url.txt
 *.egg-info/
 .pytest_cache/
 cache/
+data/
+node_modules/
+dist/

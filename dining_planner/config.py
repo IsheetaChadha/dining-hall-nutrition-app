@@ -7,6 +7,10 @@ API_BASE_URL = "https://api.hfs.purdue.edu/menus/v2"
 CACHE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "cache")
 NUTRITION_CACHE_PATH = os.path.join(CACHE_DIR, "nutrition_cache.json")
 
+# Web app state (per-user settings). Gitignored.
+DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
+APP_DB_PATH = os.path.join(DATA_DIR, "app.db")
+
 # Reflects the stated priority order: Nutrition > Time > Proximity.
 SCORE_WEIGHTS = {
     "nutrition": 0.6,
