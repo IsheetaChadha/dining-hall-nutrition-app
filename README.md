@@ -1,13 +1,13 @@
 # Dining Hall Nutrition Planner
 
-A Python command-line tool that tells a Purdue student **which dining hall to eat at, and
-what to put on the plate**. It ranks each day's options by how well they meet a daily
-nutrition goal, whether they fit the free time in your calendar, and how close they are to
-your next class.
+I built this because deciding where to eat on campus turned into a daily puzzle. Every
+Purdue dining hall serves a different menu, I was trying to hit a protein goal without
+eating beef or pork, and my class schedule decided when I could actually get there.
 
-It pulls live menus and per-item nutrition data from Purdue's dining API, reads free time
-from a private iCal feed or the Google Calendar API, and combines everything into one
-ranked list.
+This Python command-line tool works it out for me. It pulls the day's menus and nutrition
+facts from Purdue's dining API and checks my calendar for free time. Then it recommends
+which dining hall to go to and which items to get, ranked by nutrition first, then timing,
+then how close the hall is to my next class.
 
 ## Features
 
